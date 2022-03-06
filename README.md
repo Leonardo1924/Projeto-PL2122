@@ -7,6 +7,6 @@ Classificação Final: .../20
 
 # Autores
 
-- [David Duarte] (https://github.com/DvdDuarte)
-- [Ema Dias] (https://github.com/emadias)
+- [David Duarte](https://github.com/DvdDuarte)
+- [Ema Dias](https://github.com/emadias)
 - Leonardo Freitas

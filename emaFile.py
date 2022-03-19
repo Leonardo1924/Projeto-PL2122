@@ -1,8 +1,8 @@
-import csv
+#import csv
 import os
 import re
 import ast
-import json
+#import json
 import pickle
 
 
@@ -10,47 +10,56 @@ import pickle
 
 #print(firstline)
 
-os.remove('ficheiro.jsp')
-file = open('ficheiro.jsp','a+')
+
+
+#os.remove('ficheiro.jsp')
 #file.write('[\n')
 #file.write('{\n')
 #file.write(firstline)
 
 arquivo = open('alunos.csv',encoding='utf-8')
-arquivo2 = open('alunos.csv',encoding='utf-8')
+#arquivo2 = open('alunos.csv',encoding='utf-8')
 
 firstline = arquivo.readlines()[0].rstrip()
 lista = firstline.split(",")
+
 tamanho = len(lista)
 mydic = {}
 i=0
 
-linhas = csv.reader(arquivo2)
-listaparajson = []
 
-for linha in linhas:
-    i=0
-    #print(linha)
-    while i<tamanho:
-        #print(i)
-        mydic[lista[i]] = linha[i]
-        i=i+1
-    l = str(mydic)
-    listaparajson.append(l)   
+listaparajson = []
+file = open('alunos.csv',encoding='utf-8')
+texto = file.readlines()
+for linha in texto:
+        i=0
+        #print(linha)
+        while i<tamanho:
+            #print(i)
+             list = linha.split(",")
+             mydic[lista[i]] = list[i]
+             #print(linha[i])
+             i=i+1
+        l = str(mydic)
+       # print(l)    
+        listaparajson.append(l)   
     
-          
-print(listaparajson)
+file = open('ficheiro.jsp','w')        
+#print(listaparajson)
 length = len(listaparajson)
-print(length)
+#print(length)
 j=0
 while(j<length):
     if(j==0): 
         j+=1
     else: 
-        lst = listaparajson[j].split(",")
+        lst = listaparajson[j]
+        #print(len(lst))
+        #for i in range(len(lst)):
+        # j = int(i)
+            #  lst.insert(j,"\n")
         print(lst)
-        file.write(listaparajson[j])
-        file.write("\n")
+        file.write(lst)
         j+=1
   
 #s = pickle.loads(mydic)

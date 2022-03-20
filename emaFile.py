@@ -7,16 +7,6 @@ import ast
 import pickle
 
 
-#for linha in linhas:
-
-#print(firstline)
-
-
-
-#os.remove('ficheiro.jsp')
-#file.write('[\n')
-#file.write('{\n')
-#file.write(firstline)
 
 arquivo = open('alunos.csv',encoding='utf-8')
 #arquivo2 = open('alunos.csv',encoding='utf-8')
@@ -35,14 +25,17 @@ texto = file.readlines()
 for linha in texto:
         i=0
         #print(linha)
+        #linha.split("\n")
         while i<tamanho:
             #print(i)
-             list = linha.split(",")
-             mydic[lista[i]] = list[i]
-             #print(linha[i])
-             i=i+1
+            print(linha)
+            list = linha.rstrip('\n').split(",")
+            print(list)
+            mydic[lista[i]] = list[i]
+            i=i+1
+       # print(mydic)
         l = str(mydic)
-        #print(l)    
+       # print(l)    
         listaparajson.append(l)   
     
 
@@ -78,7 +71,6 @@ while(j<length):
                 file.write(lst[i][1:])
                 file.write('\n')
             elif result2: 
-                  print("entrou")
                   lst[i].split('}')
                   file.write(lst[i][0:-1])  
                   file.write('\n\t')

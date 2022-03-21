@@ -1,4 +1,4 @@
-id_aluno,nome,curso,Notas{2,5}::soi
+id_aluno,nome,curso,Notas{2,5}::sum
 "a1","Aysha Melanie Gilberto","LEI",12,,,
 "a2","Igor André Cantanhede","ENGFIS",12,16,,
 "a3","Laurénio Narciso","ENGFIS",8,14,15,14

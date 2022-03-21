@@ -9,7 +9,6 @@ import pickle
 
 
 nome = input ("Enter file csv path :")
-print(nome)
 arquivo = open(nome,encoding='utf-8')
 arquivo2 = open(nome,encoding='utf-8')
 
@@ -22,18 +21,16 @@ listaFunc = firstline2.split("::")
 funcao = ""
 if (len(listaFunc)>1):
     funcao= listaFunc[1]
-print(funcao)
 
 funcoesValidas = ['max','min','avg','count','sum']
 listaKeys = firstline.split(",")
 
 tamanho = len(listaKeys)
-print(tamanho)
 i=0
 
 
 listaparajson = []
-file = open('alunos.csv',encoding='utf-8')
+file = open(nome,encoding='utf-8')
 next(file)
 texto = file.readlines()
 dicionario = {}
@@ -103,12 +100,12 @@ for linha in texto:
        
         
     
-print(dicionario)
-
-if (os.path.isfile('ficheiro2.json')==True):
-    os.remove('ficheiro2.json')
+listaNome = nome.split('.')
+nome = listaNome[0] + '.json'
+if (os.path.isfile(nome)==True):
+    os.remove(nome)
    
-file = open('ficheiro2.json','w')        
+file = open(nome,'w')        
 
 file.write('[')
 file.write('\t')

@@ -10,15 +10,21 @@ import pickle
 
 
 arquivo = open('alunos.csv',encoding='utf-8')
-#arquivo2 = open('alunos.csv',encoding='utf-8')
+arquivo2 = open('alunos.csv',encoding='utf-8')
 
 firstline = arquivo.readlines()[0].rstrip()
 firstline = re.sub('{\d,?\d?}','',firstline)
+firstline = re.sub('::','_',firstline)
 
-print(firstline)
+firstline2 = arquivo2.readlines()[0].rstrip()
+listaFunc = firstline2.split("::")
+funcao = ""
+if (len(listaFunc)>1):
+    funcao= listaFunc[1]
+print(funcao)
 
+funcoesValidas = ['max','min','avg','count','sum']
 listaKeys = firstline.split(",")
-print(listaKeys)
 
 tamanho = len(listaKeys)
 print(tamanho)
@@ -40,7 +46,6 @@ for linha in texto:
         listaNotas= []
         mydic = {}
         list = linha.rstrip('\n').split(",")
-        print(list)
         while i < len(list):
             #print(i)
             #print(linha)
@@ -56,24 +61,46 @@ for linha in texto:
                 i+=1
             #print(list)
             elif(result2):
-                print("entrou")
                 i+=1
             else: 
                 keyaux = '"' + listaKeys[k] + '"'
                 k+=1
                 mydic[keyaux] = list[i] 
                 i+=1 
-           
-        keyaux = '"' + listaKeys[k] + '"'
-        k+=1
-        mydic[keyaux] = listaNotas
-        dicionario[j] = mydic
-        j=j+1
-    
-    #s    print(mydic)
-       # l = str(mydic)
-       # print(l) 
- 
+        
+        if (funcao==""):
+             keyaux = '"' + listaKeys[k] + '"'
+             k+=1
+             mydic[keyaux] = listaNotas
+             dicionario[j] = mydic
+             j=j+1
+       
+        
+        else: 
+            if(funcao in funcoesValidas):
+                 keyaux = '"' + listaKeys[k] + '"'
+                 k+=1
+                 fun = str(funcao)
+                 if(funcao=="sum"):
+                      mydic[keyaux] = sum(listaNotas)
+                 elif(funcao=="avg"):
+                       mydic[keyaux] = sum(listaNotas)/len(listaNotas)
+                 elif(funcao=="count"):
+                       mydic[keyaux] = len(listaNotas)
+                 elif(funcao=="min"):
+                       mydic[keyaux] = min(listaNotas)
+                 elif(funcao=="max"):
+                       mydic[keyaux] = max(listaNotas)
+            if (funcao not in funcoesValidas):
+                  keyaux = '"' + listaKeys[k] + '"'
+                  k+=1
+                  mydic[keyaux] = listaNotas
+                 
+            dicionario[j] = mydic
+            j=j+1
+        
+       
+        
     
 print(dicionario)
 

@@ -13,41 +13,60 @@ arquivo = open('alunos.csv',encoding='utf-8')
 #arquivo2 = open('alunos.csv',encoding='utf-8')
 
 firstline = arquivo.readlines()[0].rstrip()
-lista = firstline.split(",")
+firstline = re.sub('{\d,?\d?}','',firstline)
 
-tamanho = len(lista)
+print(firstline)
 
+listaKeys = firstline.split(",")
+print(listaKeys)
+
+tamanho = len(listaKeys)
+print(tamanho)
 i=0
 
 
 listaparajson = []
 file = open('alunos.csv',encoding='utf-8')
+next(file)
 texto = file.readlines()
 dicionario = {}
 j = 0
+
 for linha in texto:
         i=0
+        k=0
         #print(linha)
         #linha.split("\n")
         listaNotas= []
         mydic = {}
-        while i<tamanho:
+        list = linha.rstrip('\n').split(",")
+        print(list)
+        while i < len(list):
             #print(i)
             #print(linha)
-            list = linha.rstrip('\n').split(",")
-            #print(list[i])
-            pattern = '\d+'
-            pattern2 = 'tpc'
-            result2 = re.match(pattern2,lista[i])
-            result = re.match(pattern, list[i])
-            if(result):
-                listaNotas.append(int(list[i]))
+            
             #print(list)
-            if(not result2):
-               keyaux = '"' + lista[i] + '"'
-               mydic[keyaux] = list[i]
-            i=i+1
-        mydic['"Notas"'] = listaNotas
+            #print(list[i])
+            patternNum = '\d+'
+            pattern2 = '^.{0}$'
+            resultNum = re.match(patternNum, list[i])
+            result2 = re.match(pattern2, list[i])
+            if(resultNum):
+                listaNotas.append(int(list[i]))
+                i+=1
+            #print(list)
+            elif(result2):
+                print("entrou")
+                i+=1
+            else: 
+                keyaux = '"' + listaKeys[k] + '"'
+                k+=1
+                mydic[keyaux] = list[i] 
+                i+=1 
+           
+        keyaux = '"' + listaKeys[k] + '"'
+        k+=1
+        mydic[keyaux] = listaNotas
         dicionario[j] = mydic
         j=j+1
     
@@ -57,32 +76,33 @@ for linha in texto:
  
     
 print(dicionario)
-if (os.path.isfile('ficheiro.json')==True):
-    os.remove('ficheiro.json')
+
+if (os.path.isfile('ficheiro2.json')==True):
+    os.remove('ficheiro2.json')
    
-file = open('ficheiro.json','w')        
+file = open('ficheiro2.json','w')        
 
 file.write('[')
 file.write('\t')
 #print (mydic)
-k=0
-print(dicionario)
+y=0
+
 tamanhodic = len(dicionario)
-tamanho2 = len(dicionario[k])
-print(tamanhodic)
-while k < tamanhodic-1:
-    k=k+1
+tamanho2 = len(dicionario[y])
+
+while y < tamanhodic:
+    
     file.write('\n')
     file.write('\t')
     file.write('{')
     file.write('\n')
     
     j=0
-    for key in dicionario[k]:
+    for key in dicionario[y]:
         j+=1
         if (j==tamanho2):
               dic = {}
-              dic = dicionario[k]
+              dic = dicionario[y]
               file.write('\t')
               file.write('\t')
               file.write(key)
@@ -93,7 +113,7 @@ while k < tamanhodic-1:
               
         else: 
           dic = {}
-          dic = dicionario[k]
+          dic = dicionario[y]
           file.write('\t')
           file.write('\t')
           file.write(key)
@@ -102,15 +122,14 @@ while k < tamanhodic-1:
           file.write(str(value))
           file.write(',')
           file.write('\n')
-         
-    print(k)
-    if(k != tamanhodic-1):   
+
+    if(y != tamanhodic-1):   
         file.write('\t')
         file.write('},')
-      
-
+    y+=1
+    
 file.write('\t')
 file.write('}')
 file.write('\n')
 
-file.write(']')
+file.write(']') 

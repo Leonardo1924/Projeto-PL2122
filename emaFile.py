@@ -8,9 +8,10 @@ from itertools import islice
 import pickle
 
 
-
-arquivo = open('alunos.csv',encoding='utf-8')
-arquivo2 = open('alunos.csv',encoding='utf-8')
+nome = input ("Enter file csv path :")
+print(nome)
+arquivo = open(nome,encoding='utf-8')
+arquivo2 = open(nome,encoding='utf-8')
 
 firstline = arquivo.readlines()[0].rstrip()
 firstline = re.sub('{\d,?\d?}','',firstline)

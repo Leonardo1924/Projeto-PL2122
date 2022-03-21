@@ -44,9 +44,10 @@ for linha in texto:
                 listaNotas.append(int(list[i]))
             #print(list)
             if(not result2):
-               mydic[lista[i]] = list[i]
+               keyaux = '"' + lista[i] + '"'
+               mydic[keyaux] = list[i]
             i=i+1
-        mydic["Notas"] = listaNotas
+        mydic['"Notas"'] = listaNotas
         dicionario[j] = mydic
         j=j+1
     
@@ -55,11 +56,11 @@ for linha in texto:
        # print(l) 
  
     
-
-if (os.path.isfile('ficheiro.jsp')==True):
-    os.remove('ficheiro.jsp')
+print(dicionario)
+if (os.path.isfile('ficheiro.json')==True):
+    os.remove('ficheiro.json')
    
-file = open('ficheiro.jsp','w')        
+file = open('ficheiro.json','w')        
 
 file.write('[')
 file.write('\t')
@@ -67,6 +68,7 @@ file.write('\t')
 k=0
 print(dicionario)
 tamanhodic = len(dicionario)
+tamanho2 = len(dicionario[k])
 print(tamanhodic)
 while k < tamanhodic-1:
     k=k+1
@@ -74,19 +76,38 @@ while k < tamanhodic-1:
     file.write('\t')
     file.write('{')
     file.write('\n')
+    
+    j=0
     for key in dicionario[k]:
-        dic = {}
-        dic = dicionario[k]
+        j+=1
+        if (j==tamanho2):
+              dic = {}
+              dic = dicionario[k]
+              file.write('\t')
+              file.write('\t')
+              file.write(key)
+              file.write(':')
+              value = dic[key]
+              file.write(str(value))
+              file.write('\n')
+              
+        else: 
+          dic = {}
+          dic = dicionario[k]
+          file.write('\t')
+          file.write('\t')
+          file.write(key)
+          file.write(':')
+          value = dic[key]
+          file.write(str(value))
+          file.write(',')
+          file.write('\n')
+         
+    print(k)
+    if(k != tamanhodic-1):   
         file.write('\t')
-        file.write('\t')
-        file.write(key)
-        file.write(':')
-        value = dic[key]
-        file.write(str(value))
-        file.write('\n')
-    file.write('\t')
-    file.write('},')
-file.write('\n')
+        file.write('},')
+      
 
 file.write('\t')
 file.write('}')

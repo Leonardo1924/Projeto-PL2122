@@ -4,6 +4,7 @@ import os
 import re
 import ast
 #import json
+from itertools import islice
 import pickle
 
 
@@ -15,82 +16,80 @@ firstline = arquivo.readlines()[0].rstrip()
 lista = firstline.split(",")
 
 tamanho = len(lista)
-mydic = {}
+
 i=0
 
 
 listaparajson = []
 file = open('alunos.csv',encoding='utf-8')
 texto = file.readlines()
+dicionario = {}
+j = 0
 for linha in texto:
         i=0
         #print(linha)
         #linha.split("\n")
+        listaNotas= []
+        mydic = {}
         while i<tamanho:
             #print(i)
-            print(linha)
+            #print(linha)
             list = linha.rstrip('\n').split(",")
-            print(list)
-            mydic[lista[i]] = list[i]
+            #print(list[i])
+            pattern = '\d+'
+            pattern2 = 'tpc'
+            result2 = re.match(pattern2,lista[i])
+            result = re.match(pattern, list[i])
+            if(result):
+                listaNotas.append(int(list[i]))
+            #print(list)
+            if(not result2):
+               mydic[lista[i]] = list[i]
             i=i+1
-       # print(mydic)
-        l = str(mydic)
-       # print(l)    
-        listaparajson.append(l)   
+        mydic["Notas"] = listaNotas
+        dicionario[j] = mydic
+        j=j+1
+    
+    #s    print(mydic)
+       # l = str(mydic)
+       # print(l) 
+ 
     
 
 if (os.path.isfile('ficheiro.jsp')==True):
     os.remove('ficheiro.jsp')
    
 file = open('ficheiro.jsp','w')        
-#print(listaparajson)
-length = len(listaparajson)
-#print(length)
-j=0
-file.write('[')
-file.write('\n')
-while(j<length):
-    
-    if(j==0): 
-        j+=1
-    else: 
-        lst = listaparajson[j].split(',')
-      #  lst.append("\n")
-        #print(len(lst))
-        i=0
-        while i < len(lst):
-            file.write("\t")
-            pattern = '^{'
-            result = re.match(pattern, lst[i])
-            pattern2 = '}$'
-            result2 = re.search(pattern2, lst[i])
-            if result:
-                lst[i].split('{')
-                file.write('{')
-                file.write('\n\t')
-                file.write(lst[i][1:])
-                file.write('\n')
-            elif result2: 
-                  lst[i].split('}')
-                  file.write(lst[i][0:-1])  
-                  file.write('\n\t')
-                  file.write('},')
-            else:
-                 file.write(lst[i])
-                 file.write("\n")
-            i=i+1
-           
-      #  print(lst)
-      #  file.write(lst)
-        file.write("\n")
-        j+=1
-file.write('\n')
-file.write(']')
-#s = pickle.loads(mydic)
-#s = json.dumps(mydic)
-#print(listaparajson)
-#s = pickle.dumps(mydic)
-#d = pickle.loads(s)
-#l = str(mydic)
 
-#file.write(l)
+file.write('[')
+file.write('\t')
+#print (mydic)
+k=0
+print(dicionario)
+tamanhodic = len(dicionario)
+print(tamanhodic)
+while k < tamanhodic-1:
+    k=k+1
+    file.write('\n')
+    file.write('\t')
+    file.write('{')
+    file.write('\n')
+    for key in dicionario[k]:
+        dic = {}
+        dic = dicionario[k]
+        file.write('\t')
+        file.write('\t')
+        file.write(key)
+        file.write(':')
+        value = dic[key]
+        file.write(str(value))
+        file.write('\n')
+    file.write('\t')
+    file.write('},')
+file.write('\n')
+
+file.write('\t')
+file.write('}')
+file.write('\n')
+
+file.write(']')

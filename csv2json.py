@@ -66,14 +66,15 @@ for linha in texto:
                 if(resultLista and not result2):
                     varlista= '"' + listaKeys[k] + '"'
                     
-                   
-                    while(re.match('\d+',list[i])):
+                    w=0
+                    while(re.match('\d+',list[i])and int(valmax)>w):
                         listaNotas.append(int(list[i]))
                   
                         if(i==len(list)-1):
                           break 
                         else:
                             i+=1
+                            w+=1
                             
                     k+=1
                 elif(result2):

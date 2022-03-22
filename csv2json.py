@@ -13,24 +13,33 @@ arquivo = open(nome,encoding='utf-8')
 arquivo2 = open(nome,encoding='utf-8')
 
 firstline = arquivo.readlines()[0].rstrip()
-firstline = re.sub('{\d,?\d?}','',firstline)
+min = re.search('(?:{)(\d)',firstline)
+valmin = min.group(1)
+
+max = re.search('(\d)(}:?)',firstline)
+valmax = max.group(1)
+
+
+firstline = re.sub('{\d,?\d?}','lista',firstline)
 firstline = re.sub('::','_',firstline)
 
-firstline2 = arquivo2.readlines()[0].rstrip()
-listaFunc = firstline2.split("::")
-funcao = ""
-if (len(listaFunc)>1):
-    funcao= listaFunc[1]
 
+firstline2 = arquivo2.readlines()[0].rstrip()
+funcaoaux = re.search('(::)(\w+)(,)',firstline2)
+
+funcao=""
+if (funcaoaux!=None):
+    funcao = funcaoaux.group(2)
 funcoesValidas = ['max','min','avg','count','sum']
 listaKeys = firstline.split(",")
 
 tamanho = len(listaKeys)
+
 i=0
 
 
 listaparajson = []
-file = open(nome,encoding='utf-8')
+file = open('alunos.csv',encoding='utf-8')
 next(file)
 texto = file.readlines()
 dicionario = {}
@@ -43,63 +52,76 @@ for linha in texto:
         #linha.split("\n")
         listaNotas= []
         mydic = {}
-        list = linha.rstrip('\n').split(",")
-        while i < len(list):
-            #print(i)
-            #print(linha)
-            
-            #print(list)
-            #print(list[i])
-            patternNum = '\d+'
-            pattern2 = '^.{0}$'
-            resultNum = re.match(patternNum, list[i])
-            result2 = re.match(pattern2, list[i])
-            if(resultNum):
-                listaNotas.append(int(list[i]))
-                i+=1
-            #print(list)
-            elif(result2):
-                i+=1
-            else: 
-                keyaux = '"' + listaKeys[k] + '"'
-                k+=1
-                mydic[keyaux] = list[i] 
-                i+=1 
+        list = linha.rstrip('\n').split(",")  
+        while k < len(listaKeys):
+
+                patternNum = 'lista'
+                pattern2 = '^.{0}$'
+                resultLista = re.search(patternNum, listaKeys[k])
+                
+                result2 = re.match(pattern2, list[i])
+                
+              
+                print("tamanho lista",len(list))
+                if(resultLista and not result2):
+                    varlista= '"' + listaKeys[k] + '"'
+                    
+                   
+                    while(re.match('\d+',list[i])):
+                        listaNotas.append(int(list[i]))
+                        print(i)
+                        if(i==len(list)-1):
+                          break 
+                        else:
+                            i+=1
+                            
+                    k+=1
+                elif(result2):
+                    i+=1 
+                else: 
+                    keyaux = '"' + listaKeys[k] + '"'
+                    mydic[keyaux] = list[i] 
+                    i+=1 
+                    k+=1
         
+        if (len(listaNotas)>int(valmax) or len(listaNotas)<int(valmin)):
+                mydic['"Erro"'] = '"Erro no tamanho da lista"'
+                
+                
         if (funcao==""):
-             keyaux = '"' + listaKeys[k] + '"'
-             k+=1
-             mydic[keyaux] = listaNotas
-             dicionario[j] = mydic
-             j=j+1
-       
         
-        else: 
-            if(funcao in funcoesValidas):
-                 keyaux = '"' + listaKeys[k] + '"'
-                 k+=1
-                 fun = str(funcao)
-                 if(funcao=="sum"):
-                      mydic[keyaux] = sum(listaNotas)
-                 elif(funcao=="avg"):
-                       mydic[keyaux] = sum(listaNotas)/len(listaNotas)
-                 elif(funcao=="count"):
-                       mydic[keyaux] = len(listaNotas)
-                 elif(funcao=="min"):
-                       mydic[keyaux] = min(listaNotas)
-                 elif(funcao=="max"):
-                       mydic[keyaux] = max(listaNotas)
-            if (funcao not in funcoesValidas):
-                  keyaux = '"' + listaKeys[k] + '"'
-                  k+=1
-                  mydic[keyaux] = listaNotas
-                 
+            varlista = re.sub('lista','',varlista)
+            mydic[varlista] = listaNotas
             dicionario[j] = mydic
             j=j+1
-        
-       
-        
     
+        else: 
+            if(funcao in funcoesValidas):
+                varlista = re.sub('lista','',varlista)
+                fun = str(funcao)
+                if(funcao=="sum"):
+                    mydic[varlista] = sum(listaNotas)
+                elif(funcao=="avg"):
+                    mydic[varlista] = sum(listaNotas)/len(listaNotas)
+                elif(funcao=="count"):
+                    mydic[varlista] = len(listaNotas)
+                elif(funcao=="min"):
+                    mydic[varlista] = min(listaNotas)
+                elif(funcao=="max"):
+                    mydic[varlista] = max(listaNotas)
+            if (funcao not in funcoesValidas):
+                varlista
+                mydic[varlista] = listaNotas
+        
+        print(len(listaNotas))
+        print(valmax)    
+      
+            
+dicionario[j] = mydic
+j=j+1
+        
+
+   
 listaNome = nome.split('.')
 nome = listaNome[0] + '.json'
 if (os.path.isfile(nome)==True):
@@ -113,10 +135,11 @@ file.write('\t')
 y=0
 
 tamanhodic = len(dicionario)
-tamanho2 = len(dicionario[y])
+
+
 
 while y < tamanhodic:
-    
+    tamanho2 = len(dicionario[y])
     file.write('\n')
     file.write('\t')
     file.write('{')

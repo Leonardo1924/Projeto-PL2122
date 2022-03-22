@@ -25,7 +25,7 @@ firstline = re.sub('::','_',firstline)
 
 
 firstline2 = arquivo2.readlines()[0].rstrip()
-funcaoaux = re.search('(::)(\w+)(,)',firstline2)
+funcaoaux = re.search('(::)(\w+)(,)?',firstline2)
 
 funcao=""
 if (funcaoaux!=None):
@@ -62,14 +62,14 @@ for linha in texto:
                 result2 = re.match(pattern2, list[i])
                 
               
-                print("tamanho lista",len(list))
+               
                 if(resultLista and not result2):
                     varlista= '"' + listaKeys[k] + '"'
                     
                    
                     while(re.match('\d+',list[i])):
                         listaNotas.append(int(list[i]))
-                        print(i)
+                  
                         if(i==len(list)-1):
                           break 
                         else:
@@ -112,13 +112,12 @@ for linha in texto:
             if (funcao not in funcoesValidas):
                 varlista
                 mydic[varlista] = listaNotas
-        
-        print(len(listaNotas))
-        print(valmax)    
+            dicionario[j] = mydic
+            j=j+1
+          
       
             
-dicionario[j] = mydic
-j=j+1
+
         
 
    

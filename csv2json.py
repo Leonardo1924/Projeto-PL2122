@@ -13,11 +13,11 @@ arquivo = open(nome,encoding='utf-8')
 arquivo2 = open(nome,encoding='utf-8')
 
 firstline = arquivo.readlines()[0].rstrip()
-min = re.search('(?:{)(\d)',firstline)
-valmin = min.group(1)
+min_aux = re.search('(?:{)(\d)',firstline)
+valmin = min_aux.group(1)
 
-max = re.search('(\d)(}:?)',firstline)
-valmax = max.group(1)
+max_aux = re.search('(\d)(}:?)',firstline)
+valmax = max_aux.group(1)
 
 
 firstline = re.sub('{\d,?\d?}','lista',firstline)

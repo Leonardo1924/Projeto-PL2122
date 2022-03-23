@@ -3,24 +3,25 @@
 		"id_aluno":"a1",
 		"nome":"Aysha Melanie Gilberto",
 		"curso":"LEI",
-		"Notas_sum":12
+		"Erro":"Erro no tamanho da lista",
+		"Notas_max":12
 	},
 	{
 		"id_aluno":"a2",
-		"nome":"Igor André Cantanhede",
+		"nome":"Igor AndrÃ© Cantanhede",
 		"curso":"ENGFIS",
-		"Notas_sum":28
+		"Notas_max":16
 	},
 	{
 		"id_aluno":"a3",
-		"nome":"Laurénio Narciso",
+		"nome":"LaurÃ©nio Narciso",
 		"curso":"ENGFIS",
-		"Notas_sum":51
+		"Notas_max":15
 	},
 	{
 		"id_aluno":"a4",
 		"nome":"Jasnoor Casegas",
 		"curso":"LCC",
-		"Notas_sum":62
+		"Notas_max":20
 	}
 ]

@@ -126,7 +126,8 @@ listaNome = nome.split('.')
 nome = listaNome[0] + '.json'
 if (os.path.isfile(nome)==True):
     os.remove(nome)
-   
+
+file.close()
 file = open(nome,'w')        
 
 file.write('[')
@@ -181,3 +182,8 @@ file.write('}')
 file.write('\n')
 
 file.write(']') 
+
+
+arquivo.close()
+arquivo2.close()
+file.close()

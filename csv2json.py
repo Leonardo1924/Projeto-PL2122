@@ -39,7 +39,7 @@ i=0
 
 
 listaparajson = []
-file = open('alunos.csv',encoding='utf-8')
+file = open(nome,encoding='utf-8')
 next(file)
 texto = file.readlines()
 dicionario = {}

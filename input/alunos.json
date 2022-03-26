@@ -3,29 +3,29 @@
 		"id_aluno":"a1",
 		"nome":"Aysha Melanie Gilberto",
 		"curso":"LEI",
-		"idade":20,
+		"idade":21,
 		"Erro":"Erro no tamanho da lista",
 		"Notas":[12]
 	},
 	{
 		"id_aluno":"a2",
-		"nome":"Igor AndrÃ© Cantanhede",
+		"nome":"Igor André Cantanhede",
 		"curso":"ENGFIS",
-		"idade":20,
+		"idade":22,
 		"Notas":[12, 16]
 	},
 	{
 		"id_aluno":"a3",
-		"nome":"LaurÃ©nio Narciso",
+		"nome":"Laurénio Narciso",
 		"curso":"ENGFIS",
-		"idade":20,
-		"Notas":[8, 14, 15, 14, 20]
+		"idade":24,
+		"Notas":[8, 14, 15, 14]
 	},
 	{
 		"id_aluno":"a4",
 		"nome":"Jasnoor Casegas",
 		"curso":"LCC",
 		"idade":20,
-		"Notas":[14, 20, 17, 11, 20]
+		"Notas":[14, 20, 17, 11]
 	}
 ]

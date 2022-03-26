@@ -1,0 +1,30 @@
+[	
+	{
+		"id_aluno":"a1",
+		"nome":"Aysha Melanie Gilberto",
+		"curso":"LEI",
+		"idade":21,
+		"Notas_count":2
+	},
+	{
+		"id_aluno":"a2",
+		"nome":"Igor André Cantanhede",
+		"curso":"ENGFIS",
+		"idade":22,
+		"Notas_count":2
+	},
+	{
+		"id_aluno":"a3",
+		"nome":"Laurénio Narciso",
+		"curso":"ENGFIS",
+		"idade":24,
+		"Notas_count":4
+	},
+	{
+		"id_aluno":"a4",
+		"nome":"Jasnoor Casegas",
+		"curso":"LCC",
+		"idade":20,
+		"Notas_count":4
+	}
+]

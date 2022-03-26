@@ -1,0 +1,5 @@
+id_aluno,nome,curso,idade,Notas{2,5}::max
+"a1","Aysha Melanie Gilberto","LEI",21,12,13,,,
+"a2","Igor André Cantanhede","ENGFIS",22,12,16,,, 
+"a3","Laurénio Narciso","ENGFIS",24,8,14,15,14, 
+"a4","Jasnoor Casegas","LCC",20,14,20,17,11, 

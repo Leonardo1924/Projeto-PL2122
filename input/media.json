@@ -4,27 +4,27 @@
 		"nome":"Aysha Melanie Gilberto",
 		"curso":"LEI",
 		"idade":21,
-		"Notaslista_media":[12, 13]
+		"Notas_avg":12.5
 	},
 	{
 		"id_aluno":"a2",
-		"nome":"Igor André Cantanhede",
+		"nome":"Igor Andrï¿½ Cantanhede",
 		"curso":"ENGFIS",
 		"idade":22,
-		"Notaslista_media":[12, 16]
+		"Notas_avg":14.0
 	},
 	{
 		"id_aluno":"a3",
-		"nome":"Laurénio Narciso",
+		"nome":"Laurï¿½nio Narciso",
 		"curso":"ENGFIS",
 		"idade":24,
-		"Notaslista_media":[8, 14, 15, 14]
+		"Notas_avg":12.75
 	},
 	{
 		"id_aluno":"a4",
 		"nome":"Jasnoor Casegas",
 		"curso":"LCC",
 		"idade":20,
-		"Notaslista_media":[14, 20, 17, 11]
+		"Notas_avg":15.5
 	}
 ]

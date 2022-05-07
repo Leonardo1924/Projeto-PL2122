@@ -3,15 +3,16 @@ import re
 import collections
 import tokenize
 
-
 tokens = [ 
+          'REGEX',
+          'REGEX2',
+          'REGEX3',
+          'GRAM',
           'SIMBTERMINAIS',
           'SIMBNAOTERMINAIS',
           'EPSILON',
           'ARROW',
-          'NEWLINE',
-          'REGEX',
-          'DIV'
+          'NEWLINE'
 ]
 
 literals = ["|"]
@@ -20,14 +21,26 @@ def t_NEWLINE(t):
     r' \\n'
     return t 
   
-def t_DIV(t):
-    r'&&&&'  
-    
 def t_REGEX(t):
-    r't_.+'
+    r't_\w+' 
+    print("entrou1")
+    return t
     
+def t_REGEX2(t):
+    r'::'
+    return t
+  
+def t_REGEX3(t):
+    r'r\'\\\w+\''
+    return t  
+
+def t_GRAM(t):
+    r'GRAMATICA'
+    return t
+
 def t_SIMBTERMINAIS(t):
-    r'[^A-Z\$|\->=]\w* '
+    r'[a-z]\w* '
+    print("entrou")
     return t
 
 def t_SIMBNAOTERMINAIS(t):
@@ -50,22 +63,15 @@ def t_error(t):
 
 
 lexer = lex.lex()
-
-        
 import ply.yacc as yacc 
 
 
 def p_gramatica(p):
-    "gramatica : regexs DIV listaProducoes"
+    "gramatica : REGEX REGEX2 REGEX3 GRAM listaProducoes"
     pass
 
-def p_regexs(p):
-    "regexs : REGEX"
-    print(1)
-    pass
-    
-def p_gramatica_vazia(p):
-    "gramatica : " 
+def p_gramatica_empty(p):
+    "gramatica :"
     pass
 
 def p_listaProducoes_recursivo(p):
@@ -75,7 +81,8 @@ def p_listaProducoes_recursivo(p):
 def p_listaProducoes_elemento(p):
     "listaProducoes : producao"
     pass
-    
+
+
 def p_listaProducoes_newline(p):
     "listaProducoes : listaProducoes newline"
     pass
@@ -90,6 +97,7 @@ def p_newline(p):
     
 def p_producaoSimples(p): 
     "producaoSimples : '|' SIMBTERMINAIS"
+    print(p[2])
     pass
                                   
 def p_ladoEsq (p):
@@ -98,20 +106,24 @@ def p_ladoEsq (p):
     
 def p_ladoDir_simbter(p):
     "ladoDir : SIMBTERMINAIS"
+    print(p[1])
     pass
 
 def p_ladoDir_epsilon(p):
     "ladoDir : EPSILON "
     pass
+
 def p_ladoDir_rec(p):
     "ladoDir : recursividade SIMBTERMINAIS"
-    p.parser.listaTokens.add(p[2])
+    #p.parser.listaTokens.add(p[2])
+    print(p[2])
     pass
                        
 def p_recursividade(p):
     "recursividade : SIMBNAOTERMINAIS"
     pass 
-    
+   
+ 
 def p_error(p):
     print("syntax error %s",p)
     parser.error = True
@@ -122,25 +134,26 @@ parser.listaTokens=set()
 parser.error = False
 
 
-import sys
-
-
 tokens_regex = {}
+
+
 arq = open("C:\\Users\\edi8b\\OneDrive\\Ambiente de Trabalho\\texto2.txt","r+")
-
-
-for linha in arq:
+f = arq.readlines()
+for linha in f:
     parser.parse(linha)
-    parser.sucess = True
-    regex = re.search('(t_)(\w+) = (r\')(.+)(\')',linha) 
+    print(lexer.token())
+    print(linha)
+    regex = re.search('(t_)(\w+) :: (r\')(.+)(\')',linha) 
     if regex: 
         tokens_regex[regex.group(2)] = regex.group(4)
-        print(regex.group(2))
-        print(regex.group(4))
     if (parser.error== True) :
               print("erro na gramatica construida ")
+    else :
+        print("sucesso")
 
 try: 
     print(tokens_regex) 
 except KeyError: 
     print('key not present') 
+ 
+

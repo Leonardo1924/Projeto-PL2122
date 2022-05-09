@@ -1,1 +1,1 @@
-t_num :: r'\d' GRAMATICA S -> A b  \n | b
+t_num :: r'\d' GRAMATICA  S -> A macas \and | a \endOU \n B-> batatas \n

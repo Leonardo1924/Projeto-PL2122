@@ -113,7 +113,7 @@ def p_listaProducoes_elemento(p):
 
 def p_listaProducoes_newline(p):
     "listaProducoes : listaProducoes newlines"
-    print("entrou")
+    # print("entrou")
     parser.dicionarioLista = []
     pass
 
@@ -134,7 +134,7 @@ def p_ladoEsq (p):
 def p_newlines(p):
     "newlines : producoesSimples OU producaoSimples"
     parser.dicionarioOU = []
-    print("entrou2")
+    # print("entrou2")
     pass
 
 def p_newlinesSimp(p):
@@ -200,7 +200,7 @@ def p_recursividade(p):
    
  
 def p_error(p):
-    print("syntax error %s",p)
+    print("syntax error: ", p)
     parser.error = True
     
     
@@ -215,18 +215,111 @@ parser.keyOU = ''
 parser.dicionarioOU = []
 tokens_regex = {}
 
-listaAIntersetar = []
+import collections
+import sys
+
+def calcula_keys_intersetar(diccionario):
+
+    lista_keys = []
+
+    # Itera dobre o dicionario e guarda todas as keys numa lista
+    for key in diccionario:
+        lista_keys.append(key)
+        # if (re.search("_",key)):
+        #     print("Calcular o lookahead e intersetar com esta key", key)
+        #     lista_keys.append(key)#(parser.dicionarioFirstFollow[key][0])            
+        # else:
+        #     print("RESULTADO de FIRST:", diccionario[key][0])
+        #     continue
+
+    # print("Lista de Keys a Intersetar: ", lista_keys)
+    return lista_keys
+
+
+def calcula_ids_intersetar(lista_keys_intersecao):
+    lista_intersecao = []
+    for element in lista_keys_intersecao:
+        # Procura pela parte nominal do id da produção
+        id = re.search(r'([A-Za-z]+)_\d+', element)
+        if id:
+            lista_intersecao.append(id.group(1))
+            # print("ID: ",id.group(1))
+    # Ao criar um dicionário com as chaves o elemento da lista de ids necessários intersetar, este vai remover todos os ids duplicados
+    lista_intersecao = list(dict.fromkeys(lista_intersecao))
+    # print("Lista IDs a Intersetar: ", lista_intersecao)
+    return lista_intersecao
+
+lista_keys_intersetar = []
+
 def calculaLook ():
-    for key in parser.dicionarioFirstFollow:
-        if (re.search("_",key)):
-            print("calcular para estas keys e intersetar", key)
-            listaAIntersetar.append(parser.dicionarioFirstFollow[key][0])
-            
-            
-        else:
-            print("RESULTADO de FIRST:", parser.dicionarioFirstFollow[key][0])
-    print(listaAIntersetar)
-    
+
+    diccionario = parser.dicionarioFirstFollow
+    tamanhoDic = len(diccionario)
+    # print("Tamanho Dicionario: ", tamanhoDic)
+
+    lista_keys_intersetar = calcula_keys_intersetar(diccionario)    
+    lista_ids_intersecao = calcula_ids_intersetar(lista_keys_intersetar)
+    dicionario_ids = {}
+    aux = []
+
+    for id in lista_ids_intersecao:
+        for key in lista_keys_intersetar:
+            if re.search(id,key):
+                aux.append(key)
+        dicionario_ids[id] = aux
+        aux = []
+
+    # print("Dicionarios ids: ", dicionario_ids)
+    lista_atual = []
+    lista_anterior = []
+    key_anterior = ''
+    index = 0
+
+    for id in dicionario_ids:
+        ids_intersetar = dicionario_ids[id]
+        # print("Ids Intersetar: ", ids_intersetar)
+        for key in ids_intersetar:
+            lista_atual = diccionario[key]
+            # print("index: " , index, " key: ", key, " lista Atual: ", lista_atual)
+            if lista_anterior == []:
+                lista_anterior = lista_atual
+                key_anterior = key
+            else:
+                for elemento in lista_anterior:
+                    if elemento in lista_atual:
+                        print("A gramática não segue as regras para LL1 nas produções ", key_anterior, " e ", key)
+                        quit()
+                    else:
+                        lista_anterior = lista_atual
+                        key_anterior = key
+            index = index + 1
+        lista_anterior = []
+        lista_atual = []
+        key_anterior = ''
+
+
+    # for id in lista_ids_intersecao:
+    #     for key in lista_keys_intersetar:
+    #         if re.search(id,key) and id == id_anterior:
+    #             lista_atual = diccionario[key]
+    #             print("index: " , index, " key: ", key, " lista Atual: ", lista_atual)
+    #             if lista_anterior == []:
+    #                 lista_anterior = lista_atual
+    #                 id_anterior = id
+    #             else:
+    #                 for value in lista_anterior:
+    #                     if value in lista_atual:
+    #                         print("A gramática não segue as regras para LL1 nas produções ", key_anterior, " e ", key)
+    #                         quit()
+    #                     else:
+    #                         lista_anterior = lista_atual
+    #                         key_anterior = key
+    #         else:
+    #             id_anterior = id
+    #             print("ID_anterior: ", id_anterior)
+    #         index = index + 1
+    #     key_anterior = '' 
+        
 ficheiro = input("Enter the file path: ")
 arq = open(ficheiro,"r+")
 f = arq.readlines()
@@ -238,12 +331,12 @@ for linha in f:
     if regex: 
         tokens_regex[regex.group(1)] = '"' +regex.group(3) +'"'
     parser.index = parser.index + 1
-    print(parser.dicionarioFirstFollow)
+    print("Dicionario: ", parser.dicionarioFirstFollow)
     calculaLook()
     if (parser.error== True) :
-              print("erro na gramatica construida ")
+      print("erro na gramatica construida ")
     else :
-        print("sucesso")
+      print("sucesso")
     
 try: 
     print(tokens_regex) 
@@ -251,7 +344,7 @@ except KeyError:
     print('key not present') 
     
 
-import sys
+
 print("insira o nome do ficheiro que pretende ")
 nome = input()
 iteratorForTokens = 0

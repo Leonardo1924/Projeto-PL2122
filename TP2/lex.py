@@ -214,7 +214,18 @@ parser.keyOU = ''
 parser.dicionarioOU = []
 tokens_regex = {}
 
-
+listaAIntersetar = []
+def calculaLook ():
+    for key in parser.dicionarioFirstFollow:
+        if (re.search("_",key)):
+            print("calcular para estas keys e intersetar", key)
+            listaAIntersetar.append(parser.dicionarioFirstFollow[key][0])
+            
+            
+        else:
+            print("RESULTADO de FIRST:", parser.dicionarioFirstFollow[key][0])
+    print(listaAIntersetar)
+    
 arq = open("C:\\Users\\edi8b\\OneDrive\\Ambiente de Trabalho\\texto2.txt","r+")
 f = arq.readlines()
 i=0
@@ -226,6 +237,7 @@ for linha in f:
         tokens_regex[regex.group(1)] = '"' +regex.group(3) +'"'
     parser.index = parser.index + 1
     print(parser.dicionarioFirstFollow)
+    calculaLook()
     if (parser.error== True) :
               print("erro na gramatica construida ")
     else :

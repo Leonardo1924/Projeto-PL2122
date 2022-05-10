@@ -240,7 +240,7 @@ def calcula_ids_intersetar(lista_keys_intersecao):
     lista_intersecao = []
     for element in lista_keys_intersecao:
         # Procura pela parte nominal do id da produção
-        id = re.search(r'([A-Za-z]+)_\d+', element)
+        id = re.search(r'([A-Za-z]+)(|_\d+)', element)
         if id:
             lista_intersecao.append(id.group(1))
             # print("ID: ",id.group(1))
@@ -248,6 +248,35 @@ def calcula_ids_intersetar(lista_keys_intersecao):
     lista_intersecao = list(dict.fromkeys(lista_intersecao))
     # print("Lista IDs a Intersetar: ", lista_intersecao)
     return lista_intersecao
+
+def verifica_simbolo_nao_terminal(simbolo):
+    if re.search(r'[A-Z]+',simbolo):
+        return True
+    return False
+
+def interseta_listas(lista_a, lista_b, elemento_anterior, elemento_atual):
+    for elemento in lista_a:
+        if elemento in lista_b:
+            print("A gramática não segue as regras para LL1 nas produções ", elemento_anterior, " e ", elemento_atual)
+            return True
+            # quit()
+    return False
+
+def follow(key, diccionario):
+    elementos = diccionario[key]
+    print("Elementos: ", elementos)
+    lista_aux = []
+    indice = 0
+    for value in lista_aux:
+        if indice >= 0 and not verifica_simbolo_nao_terminal(value):
+            lista_atual.append(value)
+        else:
+            if lista_atual == []:
+                lista_atual = follow(value,diccionario)
+            else:
+                lista_atual = lista_atual + follow(value,diccionario)
+        indice = indice + 1
+    return elementos
 
 lista_keys_intersetar = []
 
@@ -269,7 +298,7 @@ def calculaLook ():
         dicionario_ids[id] = aux
         aux = []
 
-    # print("Dicionarios ids: ", dicionario_ids)
+    print("Dicionarios ids: ", dicionario_ids)
     lista_atual = []
     lista_anterior = []
     key_anterior = ''
@@ -279,46 +308,34 @@ def calculaLook ():
         ids_intersetar = dicionario_ids[id]
         # print("Ids Intersetar: ", ids_intersetar)
         for key in ids_intersetar:
-            lista_atual = diccionario[key]
-            # print("index: " , index, " key: ", key, " lista Atual: ", lista_atual)
-            if lista_anterior == []:
-                lista_anterior = lista_atual
-                key_anterior = key
-            else:
-                for elemento in lista_anterior:
-                    if elemento in lista_atual:
-                        print("A gramática não segue as regras para LL1 nas produções ", key_anterior, " e ", key)
-                        quit()
-                    else:
-                        lista_anterior = lista_atual
+            print("KEY: ",key)
+            tamanho_ids_intersetar = len(ids_intersetar)
+            if tamanho_ids_intersetar == 1:
+                continue
+            lista_atual_aux = diccionario[key]
+            indice = 0
+            for value in lista_atual_aux:
+                if indice >= 0 and not verifica_simbolo_nao_terminal(value):
+                    lista_atual.append(value)
+                else:
+                    if lista_atual == []:
+                        lista_atual = follow(value,diccionario)
                         key_anterior = key
-            index = index + 1
+                    else:
+                        lista_atual = lista_atual + follow(value,diccionario)
+                indice = indice + 1
+            if interseta_listas(lista_anterior, lista_atual, key_anterior, key):
+                quit()
+            else:
+                print("index: " , index, " key: ", key, " lista Atual: ", lista_atual)
+                lista_anterior = lista_atual
+                lista_atual = []
+                key_anterior = key
+        index = index + 1
         lista_anterior = []
         lista_atual = []
         key_anterior = ''
-
-
-    # for id in lista_ids_intersecao:
-    #     for key in lista_keys_intersetar:
-    #         if re.search(id,key) and id == id_anterior:
-    #             lista_atual = diccionario[key]
-    #             print("index: " , index, " key: ", key, " lista Atual: ", lista_atual)
-    #             if lista_anterior == []:
-    #                 lista_anterior = lista_atual
-    #                 id_anterior = id
-    #             else:
-    #                 for value in lista_anterior:
-    #                     if value in lista_atual:
-    #                         print("A gramática não segue as regras para LL1 nas produções ", key_anterior, " e ", key)
-    #                         quit()
-    #                     else:
-    #                         lista_anterior = lista_atual
-    #                         key_anterior = key
-    #         else:
-    #             id_anterior = id
-    #             print("ID_anterior: ", id_anterior)
-    #         index = index + 1
-    #     key_anterior = '' 
+        
         
 # ficheiro = input("Enter the file path: ")
 # arq = open(ficheiro,"r+")

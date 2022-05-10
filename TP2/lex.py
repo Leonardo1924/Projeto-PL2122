@@ -320,8 +320,9 @@ def calculaLook ():
     #         index = index + 1
     #     key_anterior = '' 
         
-ficheiro = input("Enter the file path: ")
-arq = open(ficheiro,"r+")
+# ficheiro = input("Enter the file path: ")
+# arq = open(ficheiro,"r+")
+arq = open("texto2.txt","r+")
 f = arq.readlines()
 i=0
 for linha in f:
@@ -344,9 +345,7 @@ except KeyError:
     print('key not present') 
     
 
-
-print("insira o nome do ficheiro que pretende ")
-nome = input()
+nome = input("insira o nome do ficheiro que pretende ")
 iteratorForTokens = 0
 f = open(nome+".py", 'w')
 f.write("tokens = [")

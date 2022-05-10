@@ -1,3 +1,4 @@
+
 import ply.lex as lex
 import re
 import collections
@@ -22,16 +23,16 @@ literals = ["|"]
 
 def t_NEWLINE(t):
     r' \\n'
-    parser.index = parser.index + 1
     print(parser.index)
     return t 
 
 def t_END(t):
     r'\\endOU'
+    parser.index = parser.index + 1
     return t 
 
 def t_OU(t):
-    r'\\and'
+    r'\\initOU'
 
     return t
 
@@ -83,10 +84,15 @@ def p_gramatica(p):
     pass
 
 def p_regexs(p):
-    "regexs : regexs REGEX REGEX2 REGEX3"
+    "regexs : regexs regex"
     pass
-def p_regex_empty(p):
-    "regexs :"
+
+def p_regex(p):
+    "regex : REGEX REGEX2 REGEX3"
+    pass
+
+def p_regexSim(p):
+    "regexs : regex"
     pass
 
 def p_gramatica_empty(p):
@@ -103,10 +109,9 @@ def p_listaProducoes_elemento(p):
 
 
 def p_listaProducoes_newline(p):
-    "listaProducoes : listaProducoes newline"
-    print("antes do clear", parser.dicionarioFirstFollow)
+    "listaProducoes : listaProducoes newlines"
+    print("entrou")
     parser.dicionarioLista = []
-    print("depois do clear", parser.dicionarioFirstFollow)
     pass
 
 def p_producao(p):
@@ -115,61 +120,79 @@ def p_producao(p):
 
 def p_ladoEsq (p):
     "ladoEsq : SIMBNAOTERMINAIS"
-   
     parser.key = p[1]
     parser.keyOU = p[1]
-    print("KEYYYYYY", parser.key)
     key = ''
     keyOU = ''
     pass
 
-def p_newline(p):
-    "newline : OU producaoSimples"
-    pass
-    
-def p_producaoSimples(p): 
-    "producaoSimples : '|' SIMBTERMINAIS END"
-    parser.dicionarioOU.append(p[2])
-    print("key",parser.keyOU, "value", parser.dicionarioOU, "key", parser.key, "value", parser.dicionarioLista)
-    parser.dicionarioFirstFollow[parser.keyOU+"_ProducaoOU"] = parser.dicionarioOU 
-    print("adicionou")
-    print(parser.dicionarioFirstFollow)
-    
-    pass
-                                  
 
+
+def p_newlines(p):
+    "newlines : producoesSimples OU producaoSimples"
+    parser.dicionarioOU = []
+    print("entrou2")
+    pass
     
+def p_newlinesSimp(p):
+    "producoesSimples : "
+    pass
+
+def p_producaoSimples(p): 
+    "producaoSimples : '|' ladoDirOU END"
+    pass
+    
+def p_ladoDirOU(p):
+    "ladoDirOU : SIMBTERMINAIS"
+    parser.dicionarioOU.append(p[1])
+    p.parser.listaTokens.append(p[1])
+    parser.dicionarioFirstFollow[parser.keyOU+"_ProducaoOU" + str(parser.index) ] = parser.dicionarioOU 
+    pass
+
+def p_ladoDirOU_epsilon(p):
+    "ladoDirOU : EPSILON"
+    parser.dicionarioOU.append(p[1])
+    p.parser.listaTokens.append(p[1])
+    parser.dicionarioFirstFollow[parser.keyOU+"_ProducaoOU" + str(parser.index) ] = parser.dicionarioOU 
+    pass
+
+def p_ladoDirOU_rec(p):
+    "ladoDirOU : recursividadeOu SIMBTERMINAIS"  
+    parser.dicionarioOU.append(p[2])
+    p.parser.listaTokens.append(p[2])
+    parser.dicionarioFirstFollow[parser.keyOU+"_ProducaoOU" + str(parser.index) ] = parser.dicionarioOU 
+    pass
+
+def p_recursividadeOU(p):
+    "recursividadeOu : SIMBNAOTERMINAIS"   
+    parser.dicionarioOU.append(p[1])
+    p.parser.listaTokens.append(p[1])
+    parser.dicionarioFirstFollow[parser.keyOU+"_ProducaoOU" + str(parser.index) ] = parser.dicionarioOU 
+    pass      
+
 def p_ladoDir_simbter(p):
     "ladoDir : SIMBTERMINAIS"
-    print("antes", parser.dicionarioFirstFollow, "KEY", parser.key)
     parser.dicionarioLista.append(p[1])
-    print("key",parser.key, "value", parser.dicionarioLista)
+    p.parser.listaTokens.append(p[1])
     parser.dicionarioFirstFollow[parser.key] = parser.dicionarioLista
-    print(parser.dicionarioFirstFollow)
-    print("adicionou")
-    print(p[1])
     pass
 
 def p_ladoDir_epsilon(p):
     "ladoDir : EPSILON "
     parser.dicionarioLista.append(p[1])
+    p.parser.listaTokens.append(p[1])
     pass
 
 def p_ladoDir_rec(p):
     "ladoDir : recursividade SIMBTERMINAIS"
-    #p.parser.listaTokens.add(p[2])
+    p.parser.listaTokens.append(p[2])
     parser.dicionarioLista.append(p[2])
-    print("key",parser.key, "value", parser.dicionarioLista)
     parser.dicionarioFirstFollow[parser.key] = parser.dicionarioLista
-    print("adicionou")
-    print(parser.dicionarioFirstFollow)
     pass
                        
 def p_recursividade(p):
     "recursividade : SIMBNAOTERMINAIS"
     parser.dicionarioLista.append(p[1])
-    print("key",parser.key, "value", parser.dicionarioLista)
-    print("Adicionou")
     pass 
    
  
@@ -179,7 +202,7 @@ def p_error(p):
     
     
 parser = yacc.yacc()
-parser.listaTokens=set()
+parser.listaTokens= []
 parser.error = False
 parser.dicionarioFirstFollow = {}
 parser.index = 0
@@ -196,9 +219,9 @@ i=0
 for linha in f:
     print(parser.index)
     parser.parse(linha)
-    regex = re.search('(t_)(\w+) :: (r\')(.+)(\')',linha) 
+    regex = re.search('(t_\w+) :: (r\')(.+)(\')',linha) 
     if regex: 
-        tokens_regex[regex.group(2)] = regex.group(4)
+        tokens_regex[regex.group(1)] = '"' +regex.group(3) +'"'
     parser.index = parser.index + 1
     print(parser.dicionarioFirstFollow)
     if (parser.error== True) :
@@ -206,12 +229,40 @@ for linha in f:
     else :
         print("sucesso")
     
- 
-
 try: 
     print(tokens_regex) 
 except KeyError: 
     print('key not present') 
     
 
+import sys
+print("insira o nome do ficheiro que pretende ")
+nome = input()
+iteratorForTokens = 0
+f = open(nome+".py", 'w')
+f.write("tokens = [")
+i=0
+for i in range(len(parser.listaTokens)) :
+    if i==len(parser.listaTokens)-1 :
+        f.write('"'+parser.listaTokens[i] +'"'+ "]\n")
+    else :
+        f.write('"'+parser.listaTokens[i]+'"' + ",")
+    
+f.write("import ply.lex as lex\n")
+for key in tokens_regex:
+    f.write(key)
+    f.write("=")
+    f.write(tokens_regex[key])
+    iteratorForTokens+=1
 
+f.write("\n \nt_ignore = ' \\t\\n' \n\ndef t_error(t): \n")
+
+f.write(" print")
+f.write(" ( " + '"' )
+f.write("Illegal Character:")
+f.write('"' )
+f.write( "+ t.value[0]) \n")
+f.write(" t.lexer.skip(1) \n \n")
+for key in parser.dicionarioFirstFollow:
+    if (re.search('\_ProducaoOU',key)!=True):
+         f.write("def rec"+ key)

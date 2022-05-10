@@ -1,4 +1,3 @@
-
 import ply.lex as lex
 import re
 import collections
@@ -100,11 +99,14 @@ def p_gramatica_empty(p):
     pass
 
 def p_listaProducoes_recursivo(p):
-    "listaProducoes : listaProducoes NEWLINE producao NEWLINE"
+    "listaProducoes : listaProducoes NEWLINE producao "
+    print("producoes producao")
+    
     pass
 
 def p_listaProducoes_elemento(p):
-    "listaProducoes : producao"
+    "listaProducoes : producao newlines"
+    parser.dicionarioLista = []
     pass
 
 
@@ -133,7 +135,7 @@ def p_newlines(p):
     parser.dicionarioOU = []
     print("entrou2")
     pass
-    
+
 def p_newlinesSimp(p):
     "producoesSimples : "
     pass
@@ -146,28 +148,28 @@ def p_ladoDirOU(p):
     "ladoDirOU : SIMBTERMINAIS"
     parser.dicionarioOU.append(p[1])
     p.parser.listaTokens.append(p[1])
-    parser.dicionarioFirstFollow[parser.keyOU+"_ProducaoOU" + str(parser.index) ] = parser.dicionarioOU 
+    parser.dicionarioFirstFollow[parser.keyOU+"_" + str(parser.index) ] = parser.dicionarioOU 
     pass
 
 def p_ladoDirOU_epsilon(p):
     "ladoDirOU : EPSILON"
     parser.dicionarioOU.append(p[1])
     p.parser.listaTokens.append(p[1])
-    parser.dicionarioFirstFollow[parser.keyOU+"_ProducaoOU" + str(parser.index) ] = parser.dicionarioOU 
+    parser.dicionarioFirstFollow[parser.keyOU+"_" + str(parser.index) ] = parser.dicionarioOU 
     pass
 
 def p_ladoDirOU_rec(p):
     "ladoDirOU : recursividadeOu SIMBTERMINAIS"  
     parser.dicionarioOU.append(p[2])
     p.parser.listaTokens.append(p[2])
-    parser.dicionarioFirstFollow[parser.keyOU+"_ProducaoOU" + str(parser.index) ] = parser.dicionarioOU 
+    parser.dicionarioFirstFollow[parser.keyOU+"_" + str(parser.index) ] = parser.dicionarioOU 
     pass
 
 def p_recursividadeOU(p):
     "recursividadeOu : SIMBNAOTERMINAIS"   
     parser.dicionarioOU.append(p[1])
     p.parser.listaTokens.append(p[1])
-    parser.dicionarioFirstFollow[parser.keyOU+"_ProducaoOU" + str(parser.index) ] = parser.dicionarioOU 
+    parser.dicionarioFirstFollow[parser.keyOU+"_" + str(parser.index) ] = parser.dicionarioOU 
     pass      
 
 def p_ladoDir_simbter(p):

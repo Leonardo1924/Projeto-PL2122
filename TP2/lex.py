@@ -1,3 +1,4 @@
+from fileinput import filename
 import ply.lex as lex
 import re
 import collections
@@ -226,7 +227,8 @@ def calculaLook ():
             print("RESULTADO de FIRST:", parser.dicionarioFirstFollow[key][0])
     print(listaAIntersetar)
     
-arq = open("C:\\Users\\edi8b\\OneDrive\\Ambiente de Trabalho\\texto2.txt","r+")
+ficheiro = input("Enter the file path: ")
+arq = open(ficheiro,"r+")
 f = arq.readlines()
 i=0
 for linha in f:

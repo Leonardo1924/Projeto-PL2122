@@ -262,21 +262,49 @@ def interseta_listas(lista_a, lista_b, elemento_anterior, elemento_atual):
             # quit()
     return False
 
-def follow(key, diccionario):
-    elementos = diccionario[key]
-    print("Elementos: ", elementos)
-    lista_aux = []
-    indice = 0
-    for value in lista_aux:
-        if indice >= 0 and not verifica_simbolo_nao_terminal(value):
-            lista_atual.append(value)
-        else:
-            if lista_atual == []:
-                lista_atual = follow(value,diccionario)
+def follow(key,diccionario):
+    pass
+
+def first(key,diccionario_ids,diccionario):
+    ids = diccionario_ids[key]
+    diccionario_listas_first = {}
+    lista_simbolos_nao_terminais = []
+    for id in ids:
+        print("ID: ", id)
+        # print("ELEMENTOS: ", diccionario[id])
+        for i, simbolo in enumerate(diccionario[id]):
+            print("SIMBOLO: ", simbolo)
+            print("I; ", i)
+            if i == 0 and verifica_simbolo_nao_terminal(simbolo):
+                # S -> A macas
+                lista_simbolos_nao_terminais = first(simbolo,diccionario_ids,diccionario)
+                # return lista_simbolos_nao_terminais
+            elif i == 0:
+                lista_simbolos_nao_terminais.append(simbolo)
+                # print("Lista SNT: ", lista_simbolos_nao_terminais)
+                # return lista_simbolos_nao_terminais
             else:
-                lista_atual = lista_atual + follow(value,diccionario)
-        indice = indice + 1
-    return elementos
+                continue
+    return lista_simbolos_nao_terminais
+
+
+    
+
+# def follow(key, diccionario):
+#     elementos = diccionario[key]
+#     print("Elementos: ", elementos)
+#     lista_aux = []
+#     indice = 0
+#     for value in lista_aux:
+#         if indice >= 0 and not verifica_simbolo_nao_terminal(value):
+#             lista_atual.append(value)
+#         else:
+#             if lista_atual == []:
+#                 lista_atual = follow(value,diccionario)
+#             else:
+#                 lista_atual = lista_atual + follow(value,diccionario)
+#         indice = indice + 1
+#     return elementos
 
 lista_keys_intersetar = []
 
@@ -305,36 +333,40 @@ def calculaLook ():
     index = 0
 
     for id in dicionario_ids:
-        ids_intersetar = dicionario_ids[id]
-        # print("Ids Intersetar: ", ids_intersetar)
-        for key in ids_intersetar:
-            print("KEY: ",key)
-            tamanho_ids_intersetar = len(ids_intersetar)
-            if tamanho_ids_intersetar == 1:
-                continue
-            lista_atual_aux = diccionario[key]
-            indice = 0
-            for value in lista_atual_aux:
-                if indice >= 0 and not verifica_simbolo_nao_terminal(value):
-                    lista_atual.append(value)
-                else:
-                    if lista_atual == []:
-                        lista_atual = follow(value,diccionario)
-                        key_anterior = key
-                    else:
-                        lista_atual = lista_atual + follow(value,diccionario)
-                indice = indice + 1
-            if interseta_listas(lista_anterior, lista_atual, key_anterior, key):
-                quit()
-            else:
-                print("index: " , index, " key: ", key, " lista Atual: ", lista_atual)
-                lista_anterior = lista_atual
-                lista_atual = []
-                key_anterior = key
-        index = index + 1
-        lista_anterior = []
-        lista_atual = []
-        key_anterior = ''
+        lista_elementos = first(id,dicionario_ids,diccionario)
+        print("ID: ", id, "Lista ENT First: ", lista_elementos)
+
+#     for id in dicionario_ids:
+#         ids_intersetar = dicionario_ids[id]
+#         # print("Ids Intersetar: ", ids_intersetar)
+#         for key in ids_intersetar:
+#             print("KEY: ",key)
+#             tamanho_ids_intersetar = len(ids_intersetar)
+#             if tamanho_ids_intersetar == 1:
+#                 continue
+#             lista_atual_aux = diccionario[key]
+#             indice = 0
+#             for value in lista_atual_aux:
+#                 if indice >= 0 and not verifica_simbolo_nao_terminal(value):
+#                     lista_atual.append(value)
+#                 else:
+#                     if lista_atual == []:
+#                         lista_atual = follow(value,diccionario)
+#                         key_anterior = key
+#                     else:
+#                         lista_atual = lista_atual + follow(value,diccionario)
+#                 indice = indice + 1
+#             if interseta_listas(lista_anterior, lista_atual, key_anterior, key):
+#                 quit()
+#             else:
+#                 print("index: " , index, " key: ", key, " lista Atual: ", lista_atual)
+#                 lista_anterior = lista_atual
+#                 lista_atual = []
+#                 key_anterior = key
+#         index = index + 1
+#         lista_anterior = []
+#         lista_atual = []
+#         key_anterior = ''
         
         
 # ficheiro = input("Enter the file path: ")

@@ -15,4 +15,4 @@ chmod +x teste.sh
 
 - [David Duarte](https://github.com/DvdDuarte)
 - [Ema Dias](https://github.com/emadias)
-- Leonardo Freitas
+- [Leonardo Freitas](https://github.com/Leonardo1924)

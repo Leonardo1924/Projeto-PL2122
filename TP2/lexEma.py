@@ -3,7 +3,6 @@ import re
 import collections
 import tokenize
 
-
 tokens = [ 
           'REGEX',
           'REGEX2',
@@ -11,14 +10,13 @@ tokens = [
           'GRAM',
           'SIMBTERMINAIS',
           'SIMBNAOTERMINAIS',
-          'EPSILON',
           'ARROW',
           'NEWLINE',
           'OU',
           'END'
 ]
 
-literals = ["|", "&"]
+literals = ["|", "$", "&"]
 
 def t_NEWLINE(t):
     r' \\n'
@@ -56,10 +54,6 @@ def t_SIMBTERMINAIS(t):
 
 def t_SIMBNAOTERMINAIS(t):
     r'[A-Z]\w* '
-    return t
-
-def t_EPSILON(t):
-    r'\$ '
     return t
 
 def t_ARROW(t):
@@ -106,7 +100,6 @@ def p_listaProducoes_newline2(p):
 
 def p_listaProducoes_empty(p): 
     "listaProducoes : producao NEWLINE"
-    print("empty")
     pass
 
 def p_lista_simp(p):
@@ -126,7 +119,7 @@ def p_producao(p):
     pass
 
 def p_prod (p):
-    "producao : '&' ladoEsq ARROW ladoDir "
+    "producao : '&' ladoEsq ARROW ladoDir"
     print("verificando producao &&")
     pass
 
@@ -138,9 +131,8 @@ def p_ladoEsq (p):
     key = ''
     keyOU = ''
     parser.index = 0
+    parser.dicionarioLista = []
     pass
-
-
 
 
 def p_newlines(p):
@@ -170,7 +162,7 @@ def p_ladoDirOU(p):
     pass
 
 def p_ladoDirOU_epsilon(p):
-    "ladoDirOU : EPSILON"
+    "ladoDirOU : '$'"
     parser.dicionarioOU.append(p[1])
     p.parser.listaTokens.append(p[1])
     parser.dicionarioFirstFollow[parser.keyOU+"_" + str(parser.index) ] = parser.dicionarioOU 
@@ -190,6 +182,26 @@ def p_recursividadeOU(p):
     parser.dicionarioFirstFollow[parser.keyOU+"_" + str(parser.index) ] = parser.dicionarioOU 
     pass      
 
+           
+def p_rec_empty(p):
+    "recursividade : SIMBNAOTERMINAIS " 
+    parser.dicionarioLista.append(p[1])
+    pass           
+def p_recursividade(p):
+    "recursividade : recursividade SIMBNAOTERMINAIS"
+    print("recursividade")
+    parser.dicionarioLista.append(p[2])
+    pass 
+   
+ 
+def p_ladoDir_rec(p):
+    "ladoDir : recursividade SIMBTERMINAIS"
+    print("rec")
+    p.parser.listaTokens.append(p[2])
+    parser.dicionarioLista.append(p[2])
+    parser.dicionarioFirstFollow[parser.key] = parser.dicionarioLista
+    pass
+
 def p_ladoDir_simbter(p):
     "ladoDir : SIMBTERMINAIS"
     parser.dicionarioLista.append(p[1])
@@ -198,24 +210,13 @@ def p_ladoDir_simbter(p):
     pass
 
 def p_ladoDir_epsilon(p):
-    "ladoDir : EPSILON "
+    "ladoDir : '$'"
+    print("vazio")
     parser.dicionarioLista.append(p[1])
     p.parser.listaTokens.append(p[1])
+    parser.dicionarioFirstFollow[parser.key]= parser.dicionarioLista
     pass
 
-def p_ladoDir_rec(p):
-    "ladoDir : recursividade SIMBTERMINAIS"
-    p.parser.listaTokens.append(p[2])
-    parser.dicionarioLista.append(p[2])
-    parser.dicionarioFirstFollow[parser.key] = parser.dicionarioLista
-    pass
-                       
-def p_recursividade(p):
-    "recursividade : SIMBNAOTERMINAIS"
-    parser.dicionarioLista.append(p[1])
-    pass 
-   
- 
 def p_error(p):
     print("syntax error %s",p)
     parser.error = True
@@ -232,40 +233,118 @@ parser.keyOU = ''
 parser.dicionarioOU = []
 tokens_regex = {}
 
-listaAIntersetar = []
-def calculaLook (): #está em ciclo infinito
+def percorreAtual(lista1,lista2):
+    i=0
+    print("atual",lista1)
+    print("anterior",lista2)
+    while(i < len(lista1)):
+      if(lista1[i] in lista2):
+          print("errooo")
+          exit(1)  
+        
+def calculaLook (): 
+    temporaryVarForFollow =''
+    temporaryVarNextForFollow = ''
+    listaAIntersetar = []
+    listaAnt = []
+    temp = list(parser.dicionarioFirstFollow.keys())[0]
+      
     for key in parser.dicionarioFirstFollow:
-        if (re.search("_",key)):
+        print("KEY",key)
+        keyOU = key.split('_')
+        if (len(keyOU)>1):
+          if (keyOU[0]==key):
             print(parser.dicionarioFirstFollow[key][0])
             if(re.search('[A-Z]\w*',parser.dicionarioFirstFollow[key][0])):
                 print("realizar follow")
-              #  follow(parser.dicionarioFirstFollow[key][0])
+                temporaryVarForFollow= parser.dicionarioFirstFollow[key][0]
+                temporaryVarNextForFollow = parser.dicionarioFirstFollow[key][1]
+                print("next",temporaryVarNextForFollow)
+                follow(parser.dicionarioFirstFollow[key][0], listaAIntersetar)
+                if ('$' in listaAIntersetar):
+                        follow(temporaryVarNextForFollow,listaAIntersetar)
+                        
+             
             else :
                 print("estamos perante um first",parser.dicionarioFirstFollow[key][0])
+                if (parser.dicionarioFirstFollow[key][0] in listaAIntersetar):
+                        print('\033[91m'+"GRAMATICA NAO É LL1 (exit4)"+ "\033[1;97m")
+                        exit(1)
+                listaAIntersetar.append(parser.dicionarioFirstFollow[key][0])        
+               
         else:
-            print("RESULTADO de FIRST:", parser.dicionarioFirstFollow[key][0])
-    print(listaAIntersetar)
-    
+            if(re.search('[A-Z]\w*',parser.dicionarioFirstFollow[key][0])):
+                print('entrou ', key, parser.dicionarioFirstFollow[key][0])
+                temporaryVarForFollow= parser.dicionarioFirstFollow[key][0]
+                temporaryVarNextForFollow = parser.dicionarioFirstFollow[key][1]
+                print("next",temporaryVarNextForFollow)
+                follow(parser.dicionarioFirstFollow[key][0], listaAIntersetar)
+                if ('$' in listaAIntersetar):
+                    follow(temporaryVarNextForFollow,listaAIntersetar)
+                   
+                print(listaAIntersetar)
+                listaAnt = listaAIntersetar
 
-def follow(keyFollow): #está em ciclo infinito
+            elif(re.search('[a-z]+',parser.dicionarioFirstFollow[key][0])):
+                print("RESULTADO de FIRST:", parser.dicionarioFirstFollow[key][0])
+                if (parser.dicionarioFirstFollow[key][0] in listaAIntersetar):
+                        print('\033[91m'+"GRAMATICA NAO É LL1 (exit3)"+ "\033[1;97m")
+                        exit(1)
+                listaAIntersetar.append(parser.dicionarioFirstFollow[key][0])
+                listaAnt = listaAIntersetar
+    
+        if (not re.search(temp,key)):
+            print("entrou ", key,temp)
+            listaAIntersetar=[]
+            temp = key
+            
+    print(listaAIntersetar)
+  
+
+
+def follow(keyFollow, lista): 
     print("a procurar",keyFollow)
+
     for key in parser.dicionarioFirstFollow:
-        print("EM BUSCA ...", key)
         if (key==keyFollow):
-            print("encontrei key , resultado", parser.dicionarioFirstFollow[key][0])  
-            if (re.search('[A-Z]\w*',parser.dicionarioFirstFollow[key][0])):  #verificar se é SNT
-                    print("temos que fazer follow")
-                    follow(parser.dicionarioFirstFollow[key][0])
-        keyOU = key.split("_") #verificar se o SNT tem mais producoes
-        print("resultado do split", keyOU)  
-        if (keyOU[0]==keyFollow):
-            print("procura do OU")
-            print("first de ou", parser.dicionarioFirstFollow[key][0])
+            print("encontrei key , resultado", parser.dicionarioFirstFollow[key][0]) 
+            if (parser.dicionarioFirstFollow[key][0] in lista):
+                        print('\033[91m'+"GRAMATICA NAO É LL1 (exit2)"+ "\033[1;97m")
+                        exit(1)
+            
+            lista.append(parser.dicionarioFirstFollow[key][0]) 
+            
             if (re.search('[A-Z]\w*',parser.dicionarioFirstFollow[key][0])):  #verificar se é SNT
                 print("temos que fazer follow")
-                follow(parser.dicionarioFirstFollow[key][0])
-    
-    
+                temporaryVarForFollow= parser.dicionarioFirstFollow[key][0]
+                temporaryVarNextForFollow = parser.dicionarioFirstFollow[key][1]
+                print("next",temporaryVarNextForFollow)
+                follow(parser.dicionarioFirstFollow[key][0],lista)
+                if('$' in lista):
+                    follow(temporaryVarNextForFollow,lista)
+                    
+        keyOU = key.split("_") #verificar se o SNT tem mais producoes
+       
+        if ( len(keyOU)>1 ):
+          if(keyOU[0]==keyFollow):
+            print("entrou")
+            if (parser.dicionarioFirstFollow[key][0] in lista):
+                    print('\033[91m'+"GRAMATICA NAO É LL1 (exit1)"+ "\033[1;97m")
+                    exit(1)
+            print("first de ou", parser.dicionarioFirstFollow[key][0])
+            lista.append(parser.dicionarioFirstFollow[key][0]) 
+            if (re.search('[A-Z]\w*',parser.dicionarioFirstFollow[key][0])):  #verificar se é SNT
+                print("temos que fazer follow")
+                temporaryVarForFollow= parser.dicionarioFirstFollow[key][0]
+                temporaryVarNextForFollow = parser.dicionarioFirstFollow[key][1]
+                print("next",temporaryVarNextForFollow)
+                follow(parser.dicionarioFirstFollow[key][0],lista)
+                if ('$' in lista):
+                    follow(temporaryVarNextForFollow,lista)
+
+   
+         
+   
 arq = open("C:\\Users\\edi8b\\OneDrive\\Ambiente de Trabalho\\texto2.txt","r+")
 f = arq.readlines()
 i=0
@@ -281,8 +360,9 @@ for linha in f:
     if (parser.error== True) :
               print("erro na gramatica construida ")
     else :
-        print("sucesso")
-    
+          print("sucesso")
+
+      
 try: 
     print(tokens_regex) 
 except KeyError: 

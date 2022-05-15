@@ -371,7 +371,7 @@ arq = open("C:\\Users\\edi8b\\OneDrive\\Ambiente de Trabalho\\texto2.txt","r+")
 f = arq.readlines()
 i=0
 for linha in f:
-    print(parser.index)
+
     parser.parse(linha)
     parser.index = parser.index + 1
     print(parser.dicionarioFirstFollow)
@@ -436,7 +436,6 @@ for key in parser.dicionarioFirstFollow:
          j=0
          size = len(list(parser.dicionarioFirstFollow.keys()))
          string = key+"_"
-         print(string)
          while(j<size):
               if (not re.search(string, (list(parser.dicionarioFirstFollow.keys())[j]))):
                   j+=1

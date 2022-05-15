@@ -1,5 +1,6 @@
 import ply.lex as lex
 import re
+import sys
 import collections
 import tokenize
 
@@ -138,10 +139,10 @@ def p_newlines2(p):
     "newlines : producaoSimples"
     parser.dicionarioOU = []
     pass
-def p_newlines3(p):
-    "newlines : "
-    parser.dicionarioOU = []
-    pass
+#def p_newlines3(p):
+#    "newlines : "
+#    parser.dicionarioOU = []
+#    pass
 
 def p_producaoSimples(p): 
     "producaoSimples : OU '|' ladoDirOU END "
@@ -367,7 +368,7 @@ def follow(keyFollow, lista):
    
          
    
-arq = open("C:\\Users\\edi8b\\OneDrive\\Ambiente de Trabalho\\texto2.txt","r+")
+arq = open(sys.argv[1],"r+")
 f = arq.readlines()
 i=0
 for linha in f:
@@ -381,7 +382,7 @@ for linha in f:
     else :
           print("sucesso")
 
-import sys
+
 print("insira o nome do ficheiro que pretende ")
 nome = input()
 iteratorForTokens = 0

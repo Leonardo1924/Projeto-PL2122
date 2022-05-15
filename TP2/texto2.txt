@@ -1,1 +1,1 @@
-t_num :: r'\d' t_a :: r'a' GRAMATICA  S -> B C q \initOU | a \endOU \n B-> $ \initOU| d \endOU \n &C->q \n  
+t_num :: r'\d' t_a :: r'a' GRAMATICA  S -> B C q \initOU | a \endOU \n B-> $ \initOU| d \endOU \n &C->q \n

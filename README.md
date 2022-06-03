@@ -2,7 +2,10 @@
 
 Projetos de Processamento de linguagens 21/22
 
-Classificação Final: .../20
+Classificação Final:
+TP1 -> 17
+TP2 -> 16
+
 
 # Testar o TP2
 Para testar o TP2 basta escrever no terminal
